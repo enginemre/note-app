@@ -6,11 +6,11 @@ plugins {
     id 'kotlin-kapt'
 }
 android {
-    namespace 'com.engin.NoteApp'
+    namespace 'com.engin.note_app'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.engin.NoteApp"
+        applicationId "com.engin.note_app"
         minSdk 26
         targetSdk 33
         versionCode 1
@@ -31,6 +31,10 @@ android {
     }
     kotlinOptions {
         jvmTarget = '1.8'
+    }
+    buildFeatures {
+        dataBinding true
+        viewBinding true
     }
 }
 

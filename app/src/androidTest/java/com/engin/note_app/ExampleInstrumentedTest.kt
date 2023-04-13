@@ -1,4 +1,4 @@
-package com.engin.NoteApp
+package com.engin.note_app
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
