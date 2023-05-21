@@ -46,7 +46,7 @@ class NoteAddEditViewModel @Inject constructor(
     }
 
 
-    private fun getNoteById(id: Long) {
+    fun getNoteById(id: Long) {
         getNoteByIdJob?.cancel()
         getNoteByIdJob = useCases.getNoteById(
             noteId = id

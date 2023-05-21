@@ -9,21 +9,20 @@ class ValidateNote @Inject constructor() {
         description: String,
         imageUrl: String,
     ): ValidateNoteResult {
-        if (title.isNotEmpty()) {
-            if (description.isNotEmpty()) {
-                return ValidateNoteResult.Success(
-                    title, description, imageUrl
-                )
-            } else {
-                return ValidateNoteResult.Error(
-                    message = "Description does not empty"
-                )
-            }
-        } else {
+        if (title.isEmpty()) {
             return ValidateNoteResult.Error(
                 message = "Title does not empty"
             )
         }
+        if (description.isEmpty()) {
+            return ValidateNoteResult.Error(
+                message = "Description does not empty"
+            )
+        }
+        return ValidateNoteResult.Success(
+            title, description, imageUrl
+        )
+
     }
 
     sealed class ValidateNoteResult {

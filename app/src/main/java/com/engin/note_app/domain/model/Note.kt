@@ -17,4 +17,15 @@ data class Note(
     fun updatedDateToString() : String{
       return  updatedDate?.toFormattedDate() ?: ""
     }
+
+    override fun equals(other: Any?): Boolean {
+        return (other as Note).id == this.id
+    }
+
+    override fun hashCode(): Int {
+        var result = id?.hashCode() ?: 0
+        result = 31 * result + title.hashCode()
+        result = 31 * result + description.hashCode()
+        return result
+    }
 }
