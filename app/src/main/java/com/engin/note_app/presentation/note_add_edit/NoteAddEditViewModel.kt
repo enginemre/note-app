@@ -20,10 +20,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NoteAddEditViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
+    savedStateHandle: SavedStateHandle,
     private val useCases: NoteAddEditUseCases,
 ) : ViewModel() {
-    private var noteId: Long? = null
+    private var noteId: Long? = 0L
 
     private var _state = MutableStateFlow(NoteAddEditState())
     val state = _state.asStateFlow()

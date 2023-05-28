@@ -1,9 +1,7 @@
 package com.engin.note_app
 
-import android.app.Activity
 import android.app.Application
 import android.content.Context
-import android.content.Intent
 import androidx.test.runner.AndroidJUnitRunner
 import dagger.hilt.android.testing.HiltTestApplication
 

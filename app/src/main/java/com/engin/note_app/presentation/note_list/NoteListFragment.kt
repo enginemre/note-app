@@ -10,8 +10,11 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.recyclerview.widget.RecyclerView
+import com.engin.note_app.MainActivity
+import com.engin.note_app.R
 import com.engin.note_app.databinding.FragmentNoteListBinding
 import com.engin.note_app.presentation.note_list.adapter.NoteListRecyclerAdapter
 import com.engin.note_app.utils.CustomSnackBar
@@ -29,7 +32,7 @@ class NoteListFragment : Fragment() , NoteListListener {
 
     private  val viewModel : NoteListViewModel by viewModels()
     private  lateinit var adapter: NoteListRecyclerAdapter
-    private  lateinit var navController: NavController
+    private var navController: NavController? =null
 
 
     override fun onCreateView(
@@ -76,11 +79,13 @@ class NoteListFragment : Fragment() , NoteListListener {
 
     // Setting up ui component
     private fun setupUI(){
+        findNavController()?.let {
+            // Setting nav controller
+            navController =it
+        }
 
-        // Setting nav controller
-        navController = findNavController()
         // Listening refresh trigger
-        navController.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observe(
+        navController?.currentBackStackEntry?.savedStateHandle?.getLiveData<Boolean>("shouldRefresh")?.observe(
             viewLifecycleOwner) { result ->
             if(result)
                 viewModel.getAllNote()
@@ -156,7 +161,8 @@ class NoteListFragment : Fragment() , NoteListListener {
      */
     override fun onClickNote(id: Long) {
         val action = NoteListFragmentDirections.actionNoteListFragmentToNoteEditFragment(id)
-        navController.navigate(action)
+        val navCont = requireView().findNavController()
+        navCont.navigate(action)
     }
 
     /**
@@ -166,13 +172,20 @@ class NoteListFragment : Fragment() , NoteListListener {
      */
     override fun onAddNote() {
         val action = NoteListFragmentDirections.actionNoteListFragmentToNoteEditFragment(0L)
-        navController.navigate(action)
+        val navCont = requireView().findNavController()
+        navCont.navigate(action)
+//        findNavController()?.navigate(action)
     }
 
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun findNavController():NavController? {
+        val navHostFragment = (requireActivity() as? MainActivity)?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        return navHostFragment?.navController
     }
 
 }

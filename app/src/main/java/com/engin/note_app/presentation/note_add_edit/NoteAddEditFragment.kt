@@ -12,11 +12,12 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import com.bumptech.glide.Glide
-import com.engin.note_app.databinding.FragmentNoteEditBinding
+import com.engin.note_app.MainActivity
 import com.engin.note_app.R
+import com.engin.note_app.databinding.FragmentNoteEditBinding
 import com.engin.note_app.utils.CustomSnackBar
 import com.engin.note_app.utils.Route
 import com.engin.note_app.utils.UiEvent
@@ -31,9 +32,8 @@ class NoteAddEditFragment : Fragment(), MenuProvider {
     private var _binding: FragmentNoteEditBinding? = null
     private val binding get() = _binding!!
     private val viewModel: NoteAddEditViewModel by viewModels()
-    private lateinit var navController: NavController
-    private val args by navArgs<NoteAddEditFragmentArgs>()
-    private var mode: Int = EDIT_MODE
+    private var navController: NavController? = null
+    private var mode: Int = CREATION_MODE
 
     private val backPressedDispatcher = object : OnBackPressedCallback(true) {
         override fun handleOnBackPressed() {
@@ -78,7 +78,9 @@ class NoteAddEditFragment : Fragment(), MenuProvider {
         )
         setMenu()
         navController = findNavController()
-        mode = if (args.noteId == 0L) CREATION_MODE else EDIT_MODE
+        arguments?.let {
+            mode = if (it.getLong("note_id")== 0L) CREATION_MODE else EDIT_MODE
+        }
         // Adding custom callback for back press
         binding.apply {
             // Setting screen mode
@@ -127,11 +129,11 @@ class NoteAddEditFragment : Fragment(), MenuProvider {
                             when (event.route) {
                                 Route.Note -> {
                                     // Setting data to SaveStateHandle and trigger refresh
-                                    navController.previousBackStackEntry?.savedStateHandle?.set(
+                                    requireView().findNavController().previousBackStackEntry?.savedStateHandle?.set(
                                         "shouldRefresh",
                                         true
                                     )
-                                    navController.popBackStack()
+                                    requireView().findNavController().popBackStack()
                                 }
                                 else -> {}
                             }
@@ -204,13 +206,18 @@ class NoteAddEditFragment : Fragment(), MenuProvider {
 
     private fun onBackPressed() {
         // Not trigger refresh
-        navController.previousBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
-        navController.popBackStack()
+        requireView().findNavController().previousBackStackEntry?.savedStateHandle?.set("shouldRefresh", false)
+        requireView().findNavController().popBackStack()
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun findNavController():NavController? {
+        val navHostFragment = (requireActivity() as? MainActivity)?.supportFragmentManager?.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment
+        return navHostFragment?.navController
     }
 
 }
