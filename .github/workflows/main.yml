@@ -61,6 +61,7 @@ jobs:
           path: app/build/reports/androidTests/connected/
 
   sonar-cloud-analysis:
+    needs: [ui-tests]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout codebase
